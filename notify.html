@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<head>
+    <meta charset="UTF-8">
+    <style id="style">
+        .notify-container {
+            top: 10px;
+            right: 20px;
+            z-index: 16777271; /* min max value starts in third safari */
+            position: fixed;
+        }
+
+        .notify {            
+            margin: 10px 0 15px;
+            width: 250px;
+            background: red;
+            bottom:0px;
+            position: relative;
+            
+        }
+
+        @keyframes show {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes hide {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        .notify_delete {
+            display: none;
+        }
+
+        .notify__close {
+            width:14px;
+            height:15px;
+            margin-right: 0px;
+            font-size: 18px;
+            font-weight: bold;
+            position:absolute;
+            right:0px;
+            top:0px;
+            color: white;
+            cursor: pointer;
+
+        }
+
+        .notify__text {
+            display: inline-block;
+            margin: 20px;
+            line-height: 25px;
+            color: white;
+            cursor: default;
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+<script>
+    class Notify {
+        constructor() {
+            this.notifySection = document.createElement('section');
+            this.notifySection.classList.add('notify-container');
+            document.body.appendChild(this.notifySection);
+        }
+ 
+        notify(message = 'Нотификация 0', time = 3) {
+            this.notifySection.appendChild(this.createNotify(message, time));
+        }
+ 
+ 
+        createNotify(msg, time) {
+            let notify = document.createElement('div');
+            notify.classList.add('notify');
+            notify.setAttribute('style', `animation: show 1s, hide 0.9s ${time}s;`);
+ 
+            const text = document.createElement('div');
+            text.classList.add('notify__text');
+            text.innerHTML = msg;
+ 
+            const closeButton = document.createElement('div');
+            closeButton.classList.add('notify__close');
+            closeButton.innerHTML = '&times;';
+            closeButton.addEventListener('click', (event) => {
+                notify.classList.add('notify_delete');
+            });
+ 
+            notify.addEventListener('animationend', (event) => {
+                if (event.animationName === 'hide') {
+                    notify.removeAttribute('style');
+                    notify.classList.add('notify_delete');
+                }
+            });
+            notify.appendChild(closeButton);
+            notify.appendChild(text);
+            // notify.appendChild(closeButton);
+            return notify;
+        }
+    }
+</script>
+<script>
+    'use strict';
+    /**
+     * ЗАДАНИЕ
+     *
+     * Написать класс, который будет предоставлять интерфейс для показа js-нотификаций
+     * в браузере. Нотификации - это просто блоки с текстом, всплывающие в углу браузера
+     * на несколько секунд
+     *
+     * Нотификации должны плавно появляться и скрываться.
+     * Нотификации должны ВСЕГДА показываться поверх всего контента на странице.
+     * Нотификации должны быть красиво оформлены.
+     * На нотификациях должен быть крестик, позволяющий закрыть нотификацию.
+     */
+    // Пример использования (покажет в углу три нотификации)
+    const notifier = new Notify();
+    notifier.notify('Нотификация 1');
+    notifier.notify('Нотификация 2');
+    notifier.notify('Нотификация 3 на 10 секунд', 10);
+    notifier.notify('Длинная нотификация в пару строк');
+</script>
+ 
+</body>
+</html>
